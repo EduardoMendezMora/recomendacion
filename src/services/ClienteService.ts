@@ -9,6 +9,7 @@ import { CodigoReferido } from '../models/CodigoReferido';
 import { ClienteRepository } from '../repositories/ClienteRepository';
 import { Validator } from '../utils/Validator';
 import { SMSService } from './SMSService';
+import { Config } from '../config/config';
 
 export interface RegistroClienteDTO {
   nombre: string;
@@ -30,7 +31,9 @@ export class ClienteService {
   private smsService: SMSService;
 
   constructor(dataPath?: string) {
-    this.clienteRepository = new ClienteRepository(dataPath);
+    const config = Config.getInstance();
+    const finalDataPath = dataPath || config.getStorageConfig().dataPath;
+    this.clienteRepository = new ClienteRepository(finalDataPath);
     this.smsService = new SMSService();
   }
 

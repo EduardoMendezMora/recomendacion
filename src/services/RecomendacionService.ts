@@ -9,6 +9,7 @@ import { RecomendacionRepository } from '../repositories/RecomendacionRepository
 import { ClienteRepository } from '../repositories/ClienteRepository';
 import { Validator } from '../utils/Validator';
 import { SMSService } from './SMSService';
+import { Config } from '../config/config';
 
 export interface CrearRecomendacionDTO {
   codigoRecomendador: string;
@@ -31,8 +32,10 @@ export class RecomendacionService {
   private smsService: SMSService;
 
   constructor(dataPath?: string) {
-    this.recomendacionRepository = new RecomendacionRepository(dataPath);
-    this.clienteRepository = new ClienteRepository(dataPath);
+    const config = Config.getInstance();
+    const finalDataPath = dataPath || config.getStorageConfig().dataPath;
+    this.recomendacionRepository = new RecomendacionRepository(finalDataPath);
+    this.clienteRepository = new ClienteRepository(finalDataPath);
     this.smsService = new SMSService();
   }
 
