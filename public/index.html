@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Recomendación - Costa Rica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Recomendación</h1>
+            <p class="subtitle">Recomienda amigos y gana beneficios</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button active" onclick="showTab('registro')">Registrarse</button>
+            <button class="tab-button" onclick="showTab('recomendar')">Recomendar</button>
+            <button class="tab-button" onclick="showTab('consultar')">Mis Recomendaciones</button>
+        </nav>
+
+        <!-- Tab de Registro -->
+        <div id="registro" class="tab-content active">
+            <h2>Registro de Cliente</h2>
+            <form id="form-registro">
+                <div class="form-group">
+                    <label for="nombre-registro">Nombre Completo *</label>
+                    <input type="text" id="nombre-registro" name="nombre" required
+                           placeholder="Ej: Juan Pérez">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono-registro">Teléfono (Costa Rica) *</label>
+                    <div class="phone-input">
+                        <span class="country-code">+506</span>
+                        <input type="tel" id="telefono-registro" name="telefono" required
+                               placeholder="88881234" pattern="[0-9]{8}">
+                    </div>
+                    <small>Ingrese 8 dígitos (sin espacios)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="codigo-recomendador">Código de Recomendador (Opcional)</label>
+                    <input type="text" id="codigo-recomendador" name="codigoRecomendador"
+                           placeholder="1234" pattern="[0-9]{4}" maxlength="4">
+                    <small>Si alguien te recomendó, ingresa su código de 4 dígitos</small>
+                </div>
+
+                <button type="submit" class="btn-primary">Registrarse</button>
+            </form>
+
+            <div id="resultado-registro" class="resultado"></div>
+        </div>
+
+        <!-- Tab de Recomendar -->
+        <div id="recomendar" class="tab-content">
+            <h2>Recomendar un Amigo</h2>
+            <form id="form-recomendar">
+                <div class="form-group">
+                    <label for="codigo-mi-codigo">Mi Código de Referido *</label>
+                    <input type="text" id="codigo-mi-codigo" name="codigoRecomendador" required
+                           placeholder="1234" pattern="[0-9]{4}" maxlength="4">
+                    <small>Tu código único de 4 dígitos</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre-recomendado">Nombre del Amigo *</label>
+                    <input type="text" id="nombre-recomendado" name="nombreRecomendado" required
+                           placeholder="Ej: María García">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono-recomendado">Teléfono del Amigo (Costa Rica) *</label>
+                    <div class="phone-input">
+                        <span class="country-code">+506</span>
+                        <input type="tel" id="telefono-recomendado" name="telefonoRecomendado" required
+                               placeholder="88881234" pattern="[0-9]{8}">
+                    </div>
+                    <small>Ingrese 8 dígitos (sin espacios)</small>
+                </div>
+
+                <button type="submit" class="btn-primary">Enviar Recomendación</button>
+            </form>
+
+            <div id="resultado-recomendacion" class="resultado"></div>
+        </div>
+
+        <!-- Tab de Consultar -->
+        <div id="consultar" class="tab-content">
+            <h2>Mis Recomendaciones</h2>
+            <form id="form-consultar">
+                <div class="form-group">
+                    <label for="codigo-consulta">Mi Código de Referido *</label>
+                    <input type="text" id="codigo-consulta" name="codigo" required
+                           placeholder="1234" pattern="[0-9]{4}" maxlength="4">
+                    <small>Tu código único de 4 dígitos</small>
+                </div>
+
+                <button type="submit" class="btn-primary">Consultar</button>
+            </form>
+
+            <div id="resultado-consulta" class="resultado"></div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Sistema de Recomendación - Costa Rica</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
