@@ -21,6 +21,10 @@ export class Config {
   private config: AppConfig;
 
   private constructor() {
+    // Detectar si estamos en Netlify Functions
+    const isNetlify = process.env.NETLIFY === 'true' || process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+    const defaultDataPath = isNetlify ? '/tmp/data' : './data';
+
     this.config = {
       ultramsg: {
         instanceId: process.env.ULTRAMSG_INSTANCE_ID || 'instance112077',
@@ -31,7 +35,7 @@ export class Config {
         baseUrl: process.env.BASE_URL || 'http://localhost:8888'
       },
       storage: {
-        dataPath: process.env.DATA_PATH || './data'
+        dataPath: process.env.DATA_PATH || defaultDataPath
       }
     };
   }
