@@ -3,10 +3,9 @@
  */
 
 export interface AppConfig {
-  twilio: {
-    accountSid: string;
-    authToken: string;
-    phoneNumber: string;
+  ultramsg: {
+    instanceId: string;
+    token: string;
   };
   app: {
     name: string;
@@ -23,10 +22,9 @@ export class Config {
 
   private constructor() {
     this.config = {
-      twilio: {
-        accountSid: process.env.TWILIO_ACCOUNT_SID || '',
-        authToken: process.env.TWILIO_AUTH_TOKEN || '',
-        phoneNumber: process.env.TWILIO_PHONE_NUMBER || ''
+      ultramsg: {
+        instanceId: process.env.ULTRAMSG_INSTANCE_ID || 'instance112077',
+        token: process.env.ULTRAMSG_TOKEN || 'wp98xs1qrfhqg9ya'
       },
       app: {
         name: process.env.APP_NAME || 'Sistema de Recomendación',
@@ -56,10 +54,10 @@ export class Config {
   }
 
   /**
-   * Obtiene la configuración de Twilio
+   * Obtiene la configuración de UltraMsg
    */
-  public getTwilioConfig() {
-    return this.config.twilio;
+  public getUltraMsgConfig() {
+    return this.config.ultramsg;
   }
 
   /**
@@ -79,23 +77,19 @@ export class Config {
   /**
    * Valida que la configuración esté completa
    */
-  public validar(): { valida: boolean; errores: string[] } {
+  public validar(): { valido: boolean; errores: string[] } {
     const errores: string[] = [];
 
-    if (!this.config.twilio.accountSid) {
-      errores.push('TWILIO_ACCOUNT_SID no está configurado');
+    if (!this.config.ultramsg.instanceId) {
+      errores.push('ULTRAMSG_INSTANCE_ID no está configurado');
     }
 
-    if (!this.config.twilio.authToken) {
-      errores.push('TWILIO_AUTH_TOKEN no está configurado');
-    }
-
-    if (!this.config.twilio.phoneNumber) {
-      errores.push('TWILIO_PHONE_NUMBER no está configurado');
+    if (!this.config.ultramsg.token) {
+      errores.push('ULTRAMSG_TOKEN no está configurado');
     }
 
     return {
-      valida: errores.length === 0,
+      valido: errores.length === 0,
       errores
     };
   }
