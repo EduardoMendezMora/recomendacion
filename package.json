@@ -1,7 +1,7 @@
 {
   "name": "sistema-recomendacion-clientes",
   "version": "1.0.0",
-  "description": "Sistema de recomendación piramidal para clientes",
+  "description": "Sistema de recomendación piramidal para clientes con WhatsApp",
   "main": "index.js",
   "scripts": {
     "dev": "netlify dev",
@@ -13,19 +13,18 @@
     "recommendation",
     "referral",
     "pyramid",
-    "sms"
+    "whatsapp",
+    "ultramsg"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "twilio": "^4.19.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@netlify/functions": "^2.4.1",
     "@types/node": "^20.10.0",
     "@types/uuid": "^9.0.7",
-    "netlify-cli": "^17.10.1",
     "typescript": "^5.3.3"
   }
 }

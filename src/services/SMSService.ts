@@ -1,6 +1,6 @@
 /**
  * Servicio: SMSService
- * Maneja el envío de mensajes SMS usando Twilio
+ * Maneja el envío de mensajes WhatsApp usando UltraMsg
  */
 
 import { Config } from '../config/config';
@@ -8,33 +8,16 @@ import { Config } from '../config/config';
 export interface SMSResult {
   exito: boolean;
   mensaje: string;
-  sid?: string;
+  messageId?: string;
 }
 
 export class SMSService {
   private config: Config;
-  private twilioClient: any;
+  private ultraMsgConfig: { instanceId: string; token: string };
 
   constructor() {
     this.config = Config.getInstance();
-    this.inicializarTwilio();
-  }
-
-  /**
-   * Inicializa el cliente de Twilio
-   */
-  private inicializarTwilio(): void {
-    try {
-      const twilioConfig = this.config.getTwilioConfig();
-
-      // Solo inicializar Twilio si las credenciales están configuradas
-      if (twilioConfig.accountSid && twilioConfig.authToken) {
-        const twilio = require('twilio');
-        this.twilioClient = twilio(twilioConfig.accountSid, twilioConfig.authToken);
-      }
-    } catch (error) {
-      console.error('Error al inicializar Twilio:', error);
-    }
+    this.ultraMsgConfig = this.config.getUltraMsgConfig();
   }
 
   /**
@@ -67,39 +50,69 @@ export class SMSService {
   }
 
   /**
-   * Envía un SMS genérico
+   * Envía un mensaje de WhatsApp usando UltraMsg
    */
   private async enviarSMS(telefono: string, mensaje: string): Promise<SMSResult> {
-    // Si Twilio no está configurado, simular envío
-    if (!this.twilioClient) {
-      console.log('MODO DESARROLLO - SMS simulado:');
+    // Validar configuración
+    if (!this.ultraMsgConfig.instanceId || !this.ultraMsgConfig.token) {
+      console.log('MODO DESARROLLO - Mensaje simulado:');
       console.log(`Para: ${telefono}`);
       console.log(`Mensaje: ${mensaje}`);
       return {
         exito: true,
-        mensaje: 'SMS simulado (Twilio no configurado)',
-        sid: 'SIM' + Date.now()
+        mensaje: 'Mensaje simulado (UltraMsg no configurado)',
+        messageId: 'SIM' + Date.now()
       };
     }
 
     try {
-      const twilioConfig = this.config.getTwilioConfig();
-      const result = await this.twilioClient.messages.create({
-        body: mensaje,
-        from: twilioConfig.phoneNumber,
-        to: telefono
+      // Preparar el número en formato internacional sin el +
+      // Si el número ya tiene código de país, lo usamos tal cual
+      // Si no, asumimos Costa Rica (+506)
+      let numeroFormateado = telefono.replace(/[^0-9]/g, '');
+      if (!numeroFormateado.startsWith('506') && numeroFormateado.length === 8) {
+        numeroFormateado = '506' + numeroFormateado;
+      }
+
+      // Construir la URL de la API
+      const url = `https://api.ultramsg.com/${this.ultraMsgConfig.instanceId}/messages/chat`;
+
+      // Preparar el cuerpo de la petición
+      const body = {
+        token: this.ultraMsgConfig.token,
+        to: numeroFormateado,
+        body: mensaje
+      };
+
+      // Realizar la petición HTTP
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
       });
 
-      return {
-        exito: true,
-        mensaje: 'SMS enviado exitosamente',
-        sid: result.sid
-      };
+      const data = await response.json();
+
+      if (response.ok && data.sent) {
+        return {
+          exito: true,
+          mensaje: 'Mensaje de WhatsApp enviado exitosamente',
+          messageId: data.id || data.message_id
+        };
+      } else {
+        console.error('Error en respuesta de UltraMsg:', data);
+        return {
+          exito: false,
+          mensaje: `Error al enviar mensaje: ${data.error || data.message || 'Error desconocido'}`
+        };
+      }
     } catch (error: any) {
-      console.error('Error al enviar SMS:', error);
+      console.error('Error al enviar mensaje vía UltraMsg:', error);
       return {
         exito: false,
-        mensaje: `Error al enviar SMS: ${error.message}`
+        mensaje: `Error al enviar mensaje: ${error.message}`
       };
     }
   }
