@@ -127,7 +127,7 @@ export class SMSService {
   /**
    * Valida que el servicio esté configurado correctamente
    */
-  public validarConfiguracion(): { valido: boolean; errores: string[] } {
+  public validarConfiguracion(): { valida: boolean; errores: string[] } {
     return this.config.validar();
   }
 }
